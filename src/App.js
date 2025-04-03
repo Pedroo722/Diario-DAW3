@@ -4,7 +4,7 @@ import './App.css';
 
 // Páginas
 import Home from './pages/Home.jsx';
-import Generic from './pages/Generic.jsx'
+import History from './pages/History.jsx'
 
 export default function App() {  
   return ( 
@@ -13,7 +13,7 @@ export default function App() {
         <div className="content">
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path='/generic' element={<Generic />} />
+            <Route path='/history' element={<History />} />
           </Routes>
         </div>
       </HashRouter>

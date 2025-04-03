@@ -1,15 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Generic() {
+function History() {
   const navigate = useNavigate();
 
   const navigateToHome = () => {
     navigate('/');
   };
 
-  const navigateToGeneric = () => {
-    navigate('/generic');
+  const navigateToHistory = () => {
+    navigate('/history');
   };
 
   return (
@@ -17,7 +17,7 @@ function Generic() {
       {/* Header */}
       <header id="header">
         <span className="logo" onClick={navigateToHome} style={{ cursor: 'pointer' }}>
-          Massively
+          Diário
         </span>
       </header>
 
@@ -25,10 +25,10 @@ function Generic() {
       <nav id="nav">
         <ul className="links">
           <li>
-            <a onClick={() => navigate('/')}>Massively</a>
+            <a onClick={() => navigate('/')}>Diário</a>
           </li>
           <li className="active">
-            <a onClick={navigateToGeneric}>This is Generic Page</a>
+            <a onClick={navigateToHistory}>Postagens</a>
           </li>
         </ul>
         <ul className="icons">
@@ -61,7 +61,7 @@ function Generic() {
         <section className="post">
           <header className="major">
             <span className="date">April 25, 2017</span>
-            <h1>This is a<br />Generic Page</h1>
+            <h1>Postagens</h1>
             <p>
               Aenean ornare velit lacus varius enim ullamcorper proin aliquam facilisis
               ante sed etiam magna interdum congue. Lorem ipsum dolor amet nullam sed
@@ -98,45 +98,24 @@ function Generic() {
           <form method="post" action="#">
             <div className="fields">
               <div className="field">
-                <label htmlFor="name">Name</label>
-                <input type="text" name="name" id="name" />
+                <label htmlFor="titulo">Título</label>
+                <input type="text" name="título" id="título" />
               </div>
               <div className="field">
-                <label htmlFor="email">Email</label>
-                <input type="text" name="email" id="email" />
+                <label htmlFor="image">Imagem</label>
+                <input type="file" name="imagem" id="imagem" />
               </div>
               <div className="field">
-                <label htmlFor="message">Message</label>
-                <textarea name="message" id="message" rows="3"></textarea>
+                <label htmlFor="resumo">Resumo</label>
+                <textarea name="resumo" id="resumo" maxLength={500} rows="3"></textarea>
               </div>
             </div>
             <ul className="actions">
-              <li><input type="submit" value="Send Message" /></li>
+              <li>
+                <input type="submit" value="Enviar" />
+              </li>
             </ul>
           </form>
-        </section>
-        <section className="split contact">
-          <section className="alt">
-            <h3>Address</h3>
-            <p>1234 Somewhere Road #87257<br />Nashville, TN 00000-0000</p>
-          </section>
-          <section>
-            <h3>Phone</h3>
-            <p><a href="#">(000) 000-0000</a></p>
-          </section>
-          <section>
-            <h3>Email</h3>
-            <p><a href="#">info@untitled.tld</a></p>
-          </section>
-          <section>
-            <h3>Social</h3>
-            <ul className="icons alt">
-              <li><a href="#" className="icon brands alt fa-twitter"><span className="label">Twitter</span></a></li>
-              <li><a href="#" className="icon brands alt fa-facebook-f"><span className="label">Facebook</span></a></li>
-              <li><a href="#" className="icon brands alt fa-instagram"><span className="label">Instagram</span></a></li>
-              <li><a href="#" className="icon brands alt fa-github"><span className="label">GitHub</span></a></li>
-            </ul>
-          </section>
         </section>
       </footer>
 
@@ -148,4 +127,4 @@ function Generic() {
   );
 }
 
-export default Generic;
+export default History;

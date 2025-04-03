@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 const Home = () => {
   const navigate = useNavigate();
 
-  const navigateToGeneric = () => {
-    navigate('/generic');
+  const navigateToHistory = () => {
+    navigate('/history');
   };
 
   return (
@@ -15,8 +15,7 @@ const Home = () => {
       {/* Intro */}
       <div id="intro">
         <h1>
-          This is<br />
-          Massively
+          Diário
         </h1>
         <p>
           A free, fully responsive HTML5 + CSS3 site template designed by{' '}
@@ -41,17 +40,17 @@ const Home = () => {
 
       {/* Header */}
       <header id="header">
-        <span className="logo">Massively</span>
+        <span className="logo">Diário</span>
       </header>
 
       {/* Nav */}
       <nav id="nav">
         <ul className="links">
           <li className="active">
-            <a onClick={() => navigate('/')}>This is Massively</a>
+            <a onClick={() => navigate('/')}>Diário</a>
           </li>
           <li>
-            <a onClick={navigateToGeneric}>Generic Page</a>
+            <a onClick={navigateToHistory}>Postagens</a>
           </li>
         </ul>
         <ul className="icons">
@@ -103,7 +102,7 @@ const Home = () => {
                 className="button large"
                 style={{ cursor: 'pointer' }}
               >
-                Full Story
+                História Completa
               </a>
             </li>
           </ul>
@@ -133,7 +132,7 @@ const Home = () => {
                   className="button"
                   style={{ cursor: 'pointer' }}
                 >
-                  Full Story
+                  História Completa
                 </a>
               </li>
             </ul>
@@ -174,7 +173,7 @@ const Home = () => {
         <section>
           <form method="post" action="#">
             <div className="fields">
-              <div className="field">
+            <div className="field">
                 <label htmlFor="name">Name</label>
                 <input type="text" name="name" id="name" />
               </div>
@@ -183,13 +182,13 @@ const Home = () => {
                 <input type="text" name="email" id="email" />
               </div>
               <div className="field">
-                <label htmlFor="message">Message</label>
-                <textarea name="message" id="message" rows="3"></textarea>
+                <label htmlFor="senha">Senha</label>
+                <input type="password" name="senha" id="senha" />
               </div>
             </div>
             <ul className="actions">
               <li>
-                <input type="submit" value="Send Message" />
+                <input type="submit" value="Entrar"/>
               </li>
             </ul>
           </form>
