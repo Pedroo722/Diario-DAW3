@@ -4,7 +4,7 @@
 
 Projeto desenvolvido para a matéria de Desenvolvimento de Aplicações Web III. O objetivo principal do projeto é desenvolver um sistema de registro de atividades do dia a dia, como uma espécie de blog. 
 
-<p align="right">Coordenador: Prof. Alvaro Magnum Barbosa Neto</p>
+<p align="right">Professor: Prof. Alvaro Magnum Barbosa Neto</p>
 
 
 Membros do projeto:
