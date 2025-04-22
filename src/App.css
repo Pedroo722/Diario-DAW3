@@ -1,38 +1,25 @@
-.App {
-  text-align: center;
-}
+import React from 'react';
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import './App.css';
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+// Páginas
+import Home from './pages/Home.jsx';
+import History from './pages/History.jsx'
+import Login from './pages/Login.jsx';
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+export default function App() {
+  return (
+    <div>
+      <HashRouter>
+        <div className="content">
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/history' element={<History />} />
+            <Route path='/login' element={<Login />} />
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+          </Routes>
+        </div>
+      </HashRouter>
+    </div>
+  );
 }
