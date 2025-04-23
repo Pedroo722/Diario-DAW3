@@ -1,12 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../assets/css/main.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const navigateToHistory = () => {
-    navigate('/history');
+  const [postData, setPostData] = useState({
+    title: '',
+    summary: '',
+    image: null
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setPostData({
+      ...postData,
+      [name]: value
+    });
+  };
+
+  const handleFileChange = (e) => {
+    const { files } = e.target;
+    setPostData({
+      ...postData,
+      image: files[0]
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('title', postData.title);
+    formData.append('summary', postData.summary);
+    formData.append('image', postData.image);
+
+    try {
+      const response = await axios.post('http://localhost:8081/posts', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      console.log('Postagem criada:', response.data);
+      alert('Postagem criada com sucesso!');
+    } catch (error) {
+      console.error('Erro ao enviar postagem:', error);
+      alert('Houve um erro ao criar a postagem!');
+    }
+  };
+
+  const navigateToHome = () => {
+    navigate('/');
   };
 
   return (
@@ -14,9 +60,7 @@ const Home = () => {
 
       {/* Intro */}
       <div id="intro">
-        <h1>
-          Diário
-        </h1>
+        <h1>Diário</h1>
         <p>
           A free, fully responsive HTML5 + CSS3 site template designed by{' '}
           <a href="https://twitter.com/ajlkn">@ajlkn</a> for{' '}
@@ -50,7 +94,7 @@ const Home = () => {
             <a onClick={() => navigate('/')}>Diário</a>
           </li>
           <li>
-            <a onClick={navigateToHistory}>Postagens</a>
+            <a onClick={() => navigate('/login')}>Login</a>
           </li>
         </ul>
         <ul className="icons">
@@ -79,7 +123,6 @@ const Home = () => {
 
       {/* Main Content */}
       <div id="main">
-        {/* Featured Post */}
         <article className="post featured">
           <header className="major">
             <span className="date">April 25, 2017</span>
@@ -108,7 +151,6 @@ const Home = () => {
           </ul>
         </article>
 
-        {/* Posts */}
         <section className="posts">
           <article>
             <header>
@@ -139,7 +181,7 @@ const Home = () => {
           </article>
         </section>
 
-        {/* Footer */}
+        {/* Pagination Footer */}
         <footer>
           <div className="pagination">
             <a href="#" className="page active">
@@ -168,27 +210,46 @@ const Home = () => {
         </footer>
       </div>
 
-      {/* Footer */}
+      {/* Footer: Formulário de Postagem */}
       <footer id="footer">
         <section>
-          <form method="post" action="#">
+          <form onSubmit={handleSubmit}>
             <div className="fields">
-            <div className="field">
-                <label htmlFor="name">Name</label>
-                <input type="text" name="name" id="name" />
+              <div className="field">
+                <label htmlFor="title">Título</label>
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  value={postData.title}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
               <div className="field">
-                <label htmlFor="email">Email</label>
-                <input type="text" name="email" id="email" />
+                <label htmlFor="summary">Resumo</label>
+                <textarea
+                  name="summary"
+                  id="summary"
+                  value={postData.summary}
+                  onChange={handleInputChange}
+                  required
+                ></textarea>
               </div>
               <div className="field">
-                <label htmlFor="senha">Senha</label>
-                <input type="password" name="senha" id="senha" />
+                <label htmlFor="image">Imagem</label>
+                <input
+                  type="file"
+                  name="image"
+                  id="image"
+                  onChange={handleFileChange}
+                  required
+                />
               </div>
             </div>
             <ul className="actions">
               <li>
-                <input type="submit" value="Entrar"/>
+                <input type="submit" value="Enviar" />
               </li>
             </ul>
           </form>
@@ -206,6 +267,6 @@ const Home = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Home;

@@ -11,7 +11,9 @@ function History() {
   const navigateToHistory = () => {
     navigate('/history');
   };
-
+  const navigateToLogin = () => {
+    navigate('/Login');
+  };
   return (
     <div id="wrapper">
       {/* Header */}
@@ -29,6 +31,9 @@ function History() {
           </li>
           <li className="active">
             <a onClick={navigateToHistory}>Postagens</a>
+          </li>
+          <li className="active">
+            <a onClick={navigateToLogin}>Login</a>
           </li>
         </ul>
         <ul className="icons">
@@ -92,32 +97,6 @@ function History() {
         </section>
       </div>
 
-      {/* Footer */}
-      <footer id="footer">
-        <section>
-          <form method="post" action="#">
-            <div className="fields">
-              <div className="field">
-                <label htmlFor="titulo">Título</label>
-                <input type="text" name="título" id="título" />
-              </div>
-              <div className="field">
-                <label htmlFor="image">Imagem</label>
-                <input type="file" name="imagem" id="imagem" />
-              </div>
-              <div className="field">
-                <label htmlFor="resumo">Resumo</label>
-                <textarea name="resumo" id="resumo" maxLength={500} rows="3"></textarea>
-              </div>
-            </div>
-            <ul className="actions">
-              <li>
-                <input type="submit" value="Enviar" />
-              </li>
-            </ul>
-          </form>
-        </section>
-      </footer>
 
       {/* Copyright */}
       <div id="copyright">
