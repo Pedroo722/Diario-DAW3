@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import '../assets/css/main.css';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const Login = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { userToken, setUserToken } = useContext(UserContext);
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
@@ -28,8 +30,7 @@ const Login = () => {
           password,
         });
 
-        console.log('Login bem-sucedido:', response.data);
-
+        setUserToken(response.data.jwtToken);
         navigate('/');
       } else {
         const response = await axios.post('http://localhost:8081/auth/signup', {
@@ -38,14 +39,12 @@ const Login = () => {
           password,
         });
 
-        console.log('Cadastro bem-sucedido:', response.data);
-        alert('Cadastro feito com sucesso! Faça login.');
+        alert("Agora faça login com as credenciais registradaas.");
         toggleMode();
       }
     } catch (error) {
       const msg = error.response?.data?.message || 'Erro desconhecido';
-      alert(`Erro: ${msg}`);
-      console.error('Erro na requisição:', error);
+      alert(`Erro na autenticação: ${msg}`);
     }
   };
 

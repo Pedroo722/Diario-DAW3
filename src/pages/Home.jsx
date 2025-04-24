@@ -1,16 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import '../assets/css/main.css';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App';
 import axios from 'axios';
 
 const Home = () => {
   const navigate = useNavigate();
 
+  const { userToken } = useContext(UserContext);
   const [postData, setPostData] = useState({
     title: '',
     summary: '',
     image: null
   });
+  const [pageCount, setPageCount] = useState(1);
+  const [page, setPage] = useState(0);
+  const [posts, setPosts] = useState([]);
+  const [highlightedPost, setHighlightedPost] = useState({});
+  const months = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+
+  useEffect(() => {
+    const getPosts = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8081/posts/list?page=${page}&size=2`).then(res => res.data);
+        setHighlightedPost(response.content[0]);
+        setPosts(response.content);
+        setPageCount(response.totalPages);
+      } catch (error) {
+        console.error("Erro ao carregar posts:", error);
+      }
+    };
+
+    getPosts();
+  }, [page]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -31,29 +56,128 @@ const Home = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('title', postData.title);
-    formData.append('summary', postData.summary);
-    formData.append('image', postData.image);
+    if (userToken) {
+      const formData = new FormData();
+      formData.append('title', postData.title);
+      formData.append('body', postData.summary);
+      formData.append('image', postData.image);
 
-    try {
-      const response = await axios.post('http://localhost:8081/posts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      try {
+        const response = await axios.post('http://localhost:8081/posts/create', {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${userToken}`
+          },
+        });
 
-      console.log('Postagem criada:', response.data);
-      alert('Postagem criada com sucesso!');
-    } catch (error) {
-      console.error('Erro ao enviar postagem:', error);
-      alert('Houve um erro ao criar a postagem!');
+        alert('Postagem criada com sucesso!');
+      } catch (error) {
+        alert('Houve um erro ao criar a postagem!');
+        console.log(error)
+      }
+    } else {
+      alert('Faça login primeiro.');
+      navigate('/login');
     }
   };
 
-  const navigateToHome = () => {
-    navigate('/');
-  };
+  const Post = ({ title, body, image, createdAt }) => {
+    return (
+      <article>
+        <header>
+          <span className="date">{formatDate(createdAt)}</span>
+          <h2>
+            <a onClick={() => navigate('#')}>{title}</a>
+          </h2>
+        </header>
+        <a href="#" className="image fit">
+          <img src={image} />
+        </a>
+        <p>
+          {body}
+        </p>
+        <ul className="actions special">
+          <li>
+            <a
+              onClick={() => setHighlightedPost({ title, body, image })}
+              className="button"
+              style={{ cursor: 'pointer' }}
+            >
+              História Completa
+            </a>
+          </li>
+        </ul>
+      </article>
+    );
+  }
+
+  const NumberFooter = ({ quantity }) => {
+    return (
+      <footer>
+        <div className="pagination">
+          {quantity > 7 && page < (quantity - 7) ?
+            <span>
+              <a onClick={() => {
+                if (page > 1) {
+                  setPage(page - 1);
+                }
+              }} className="previous">
+                Anterior
+              </a>
+              <a className="page active">
+                {page + 1}
+              </a>
+              <a onClick={() => setPage(page + 1)} className="page">
+                {page + 2}
+              </a>
+              <a onClick={() => setPage(page + 2)} className="page">
+                {page + 3}
+              </a>
+              <span className="extra">&hellip;</span>
+              <a onClick={() => setPage(quantity - 3)} className="page">
+                {quantity - 3}
+              </a>
+              <a onClick={() => setPage(quantity - 2)} href="#" className="page">
+                {quantity - 2}
+              </a>
+              <a onClick={() => setPage(quantity - 1)} href="#" className="page">
+                {quantity - 1}
+              </a>
+              <a onClick={() => {
+                if (page < quantity) {
+                  setPage(page + 1);
+                }
+              }} className="next">
+                Próximo
+              </a>
+            </span>
+            : <span>
+              <a onClick={() => {
+                if (page > 0) {
+                  setPage(page - 1);
+                }
+              }} className="previous">
+                Anterior
+              </a>
+              {new Array(quantity).fill(null).map((n, i) => <a onClick={() => setPage(i)} className={`page${i == page ? " active" : ""}`}>{i + 1}</a>)}
+              <a onClick={() => {
+                if (page < quantity - 1) {
+                  setPage(page + 1);
+                }
+              }} className="next">
+                Próximo
+              </a>
+            </span>
+          }
+        </div>
+      </footer>
+    );
+  }
+
+  const formatDate = (date) => {
+    let fullDate = new Date(date);
+    return months[fullDate.getMonth()] + " " + (fullDate.getDate() + 1) + ", " + fullDate.getFullYear();
+  }
 
   return (
     <div id="wrapper" className="fade-in">
@@ -62,22 +186,22 @@ const Home = () => {
       <div id="intro">
         <h1>Diário</h1>
         <p>
-          A free, fully responsive HTML5 + CSS3 site template designed by{' '}
-          <a href="https://twitter.com/ajlkn">@ajlkn</a> for{' '}
-          <a href="https://html5up.net">HTML5 UP</a>
+          A free, fully responsive React site made by{' '}
+          <a href="https://twitter.com/ajlkn">@Pedro</a>, <a href="https://twitter.com/ajlkn">@Raykkoner</a>, <a href="https://twitter.com/ajlkn">@Thiago</a> and <a href="https://twitter.com/ajlkn">@Vinícius</a>
           <br />
-          and released for free under the{' '}
-          <a href="https://html5up.net/license">Creative Commons license</a>.
+          based on the template designed by{' '}
+          <a href="https://html5up.net/">HTML5 UP</a>.
         </p>
         <ul className="actions">
           <li>
-            <a
-              onClick={() => navigate('#header')}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('footer').scrollIntoView({ behavior: 'smooth' });
+              }}
               className="button icon solid solo fa-arrow-down scrolly"
               style={{ cursor: 'pointer' }}
-            >
-              Continue
-            </a>
+            />
           </li>
         </ul>
       </div>
@@ -97,117 +221,36 @@ const Home = () => {
             <a onClick={() => navigate('/login')}>Login</a>
           </li>
         </ul>
-        <ul className="icons">
-          <li>
-            <a href="#" className="icon brands fa-twitter">
-              <span className="label">Twitter</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" className="icon brands fa-facebook-f">
-              <span className="label">Facebook</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" className="icon brands fa-instagram">
-              <span className="label">Instagram</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" className="icon brands fa-github">
-              <span className="label">GitHub</span>
-            </a>
-          </li>
-        </ul>
+        <a href="#" className="icon brands fa-github">
+          <span className="label">GitHub</span>
+        </a>
       </nav>
 
       {/* Main Content */}
       <div id="main">
-        <article className="post featured">
-          <header className="major">
-            <span className="date">April 25, 2017</span>
-            <h2>
-              <a onClick={() => navigate('#')}>And this is a<br />massive headline</a>
-            </h2>
-            <p>
-              Aenean ornare velit lacus varius enim ullamcorper proin aliquam facilisis
-              ante sed etiam magna interdum congue. Lorem ipsum dolor amet nullam sed
-              etiam veroeros.
-            </p>
-          </header>
-          <a href="#" className="image main">
-            <img src="images/pic01.jpg" alt="" />
-          </a>
-          <ul className="actions special">
-            <li>
-              <a
-                onClick={() => navigate('/fullstory')}
-                className="button large"
-                style={{ cursor: 'pointer' }}
-              >
-                História Completa
-              </a>
-            </li>
-          </ul>
-        </article>
+        {highlightedPost &&
+          <article className="post featured">
+            <header className="major">
+              <span className="date">{formatDate(highlightedPost.createdAt)}</span>
+              <h2>
+                <a onClick={() => navigate('#')}>{highlightedPost?.title}</a>
+              </h2>
+              <p>
+                {highlightedPost?.body}
+              </p>
+            </header>
+            <a href="#" className="image main">
+              <img src={highlightedPost.image} alt="" />
+            </a>
+          </article>
+        }
 
         <section className="posts">
-          <article>
-            <header>
-              <span className="date">April 24, 2017</span>
-              <h2>
-                <a onClick={() => navigate('#')}>Sed magna<br />ipsum faucibus</a>
-              </h2>
-            </header>
-            <a href="#" className="image fit">
-              <img src="images/pic02.jpg" alt="" />
-            </a>
-            <p>
-              Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in
-              faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis
-              magna etiam.
-            </p>
-            <ul className="actions special">
-              <li>
-                <a
-                  onClick={() => navigate('/fullstory')}
-                  className="button"
-                  style={{ cursor: 'pointer' }}
-                >
-                  História Completa
-                </a>
-              </li>
-            </ul>
-          </article>
+          {posts.map(({ title, body, image, createdAt }) => <Post title={title} body={body} image={image} createdAt={createdAt} />)}
         </section>
 
         {/* Pagination Footer */}
-        <footer>
-          <div className="pagination">
-            <a href="#" className="page active">
-              1
-            </a>
-            <a href="#" className="page">
-              2
-            </a>
-            <a href="#" className="page">
-              3
-            </a>
-            <span className="extra">&hellip;</span>
-            <a href="#" className="page">
-              8
-            </a>
-            <a href="#" className="page">
-              9
-            </a>
-            <a href="#" className="page">
-              10
-            </a>
-            <a href="#" className="next">
-              Next
-            </a>
-          </div>
-        </footer>
+        <NumberFooter quantity={pageCount} />
       </div>
 
       {/* Footer: Formulário de Postagem */}
@@ -258,12 +301,9 @@ const Home = () => {
 
       {/* Copyright */}
       <div id="copyright">
-        <ul>
-          <li>&copy; Untitled</li>
-          <li>
-            Design: <a href="https://html5up.net">HTML5 UP</a>
-          </li>
-        </ul>
+        <span>
+          Design: <a href="https://html5up.net">HTML5 UP</a>
+        </span>
       </div>
     </div>
   );
