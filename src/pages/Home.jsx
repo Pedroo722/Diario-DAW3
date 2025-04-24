@@ -95,7 +95,7 @@ const Home = () => {
           <img src={image} />
         </a>
         <p>
-          {body}
+          {body.length > 50 ? body.slice(0, 50) + "..." : body}
         </p>
         <ul className="actions special">
           <li>
@@ -188,7 +188,7 @@ const Home = () => {
         <h1>Diário</h1>
         <p>
           A free, fully responsive React site made by{' '}
-          <a href="https://twitter.com/ajlkn">@Pedro</a>, <a href="https://twitter.com/ajlkn">@Raykkoner</a>, <a href="https://twitter.com/ajlkn">@Thiago</a> and <a href="https://twitter.com/ajlkn">@Vinícius</a>
+          <a href="https://github.com/Pedroo722">@Pedro</a>, <a href="https://github.com/RaykkonerD">@Raykkoner</a>, <a href="https://github.com/Thigas014">@Thiago</a> and <a href="https://github.com/ViniciusCavalcantePequeno">@Vinícius</a>
           <br />
           based on the template designed by{' '}
           <a href="https://html5up.net/">HTML5 UP</a>.
@@ -277,6 +277,7 @@ const Home = () => {
                   id="summary"
                   value={postData.summary}
                   onChange={handleInputChange}
+                  maxLength={500}
                   required
                 ></textarea>
               </div>
