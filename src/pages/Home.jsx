@@ -62,14 +62,15 @@ const Home = () => {
       formData.append('body', postData.summary);
       formData.append('image', postData.image);
 
+      console.log(userToken)
       try {
-        const response = await axios.post('http://localhost:8081/posts/create', {
+        const response = await axios.post('http://localhost:8081/posts', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${userToken}`
           },
         });
-
+      
         alert('Postagem criada com sucesso!');
       } catch (error) {
         alert('Houve um erro ao criar a postagem!');
@@ -99,7 +100,7 @@ const Home = () => {
         <ul className="actions special">
           <li>
             <a
-              onClick={() => setHighlightedPost({ title, body, image })}
+              onClick={() => setHighlightedPost({ title, body, image, createdAt })}
               className="button"
               style={{ cursor: 'pointer' }}
             >
